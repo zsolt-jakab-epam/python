@@ -17,6 +17,10 @@ def write_database_lines(lines):
     database.writelines(lines)
     database.close()    
 
+def is_number(text):
+    pattern = re.compile("^-?[0-9]+$")
+    return pattern.match(text)
+
 def list_items():
     lines = read_database_lines()
     print_lines(lines) 
@@ -32,8 +36,7 @@ def mark():
     lines = read_database_lines()
     print_lines(lines)   
     comleted_item_index = input("Which one you want to mark as completed: ")
-    pattern = re.compile("^-?[0-9]+$")
-    if pattern.match(comleted_item_index):
+    if is_number(comleted_item_index):
         comleted_item_index = int(comleted_item_index)
         if comleted_item_index <= len(lines):
             lines[comleted_item_index - 1] = lines[comleted_item_index - 1][:1] + "x" + lines[comleted_item_index - 1][2:]
