@@ -1,10 +1,12 @@
 import os
+import re
 
-clear = lambda: os.system('cls')
-empy_cell = "_"
+empy_cell = " "
 hum_cell = "X"
 comp_cell = "O"
 
+def clear(): 
+    os.system('cls')
 
 def is_winner(table):
     if table[0:3].count(hum_cell) == 3:
@@ -41,32 +43,73 @@ def is_winner(table):
         return True   
     return False
 
+def no_more_step(table):
+    return table.count(empy_cell) == 0
+
 def calculate_comp_index(table):
     return table.index(empy_cell)
 
+def is_last_cell_in_row(cell_ind):
+    return cell_ind  == 2 or cell_ind  == 5 or cell_ind  == 8
+
+def print_cell(cell_ind, cell):
+    if is_last_cell_in_row(cell_ind):
+        print(cell, end='\n')
+    else:
+        print(cell + '|', end='')
+
 def print_table(table):
     clear()
-    for i in range(3):
-        my = table[(i * 3) : (i * 3 + 3)]
-        print(''.join(my))
+    for cell_ind, cell in enumerate(table):
+        print_cell(cell_ind, cell)
+        if is_last_cell_in_row(cell_ind):
+            print('-----')
 
-table = [empy_cell for i in range(9)]
+def is_game_ended(table):
+    return is_winner(table) or no_more_step(table)
 
-print_table(table)
+def input_human_index(table):
+    input_pattern = re.compile("^[1-9]$")
+    while True:
+        hum_input = str(input())
+        if input_pattern.match(hum_input):
+            hum_index = int(hum_input) - 1
+            if table[hum_index] == empy_cell:
+                return hum_index 
 
-while True:
-    hum_index = int(input()) - 1
+def hum_step(table):
+    while True:
+        print_table(table)
+        hum_index = input_human_index(table)
+        if table[hum_index] == empy_cell:
+            break
     table[hum_index] = hum_cell
     print_table(table)
-    if is_winner(table):
-        print("There is a Winner!")
-        break
+
+
+def comp_step(table):
+    print_table(table)
     com_index = calculate_comp_index(table)
     table[com_index] = comp_cell
     print_table(table)
-    if is_winner(table):
-        print("There is a Winner!")
-        break
-    
 
-    
+def print_result(table):
+    if is_winner(table):
+        print("There is a winner!")
+    else:
+        print("The game is ended with a tie!")
+
+def main():
+    table = [empy_cell for i in range(9)]
+
+    while True:
+        hum_step(table)
+        if is_game_ended(table):
+            break
+        comp_step(table)
+        if is_game_ended(table):
+            break
+
+    print_result(table)
+
+main()
