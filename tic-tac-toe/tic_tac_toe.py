@@ -1,52 +1,29 @@
 import os
 import re
 
-empy_cell = " "
-hum_cell = "X"
-comp_cell = "O"
-
 def clear(): 
     os.system('cls')
 
-def is_winner(table):
-    if table[0:3].count(hum_cell) == 3:
-        return True
-    if table[3:6].count(hum_cell) == 3:
-        return True    
-    if table[6:9].count(hum_cell) == 3:
-        return True    
-    if table[0] == hum_cell and table[3] == hum_cell and table[6] == hum_cell:
-        return True                 
-    if table[1] == hum_cell and table[4] == hum_cell and table[7] == hum_cell:
-        return True      
-    if table[2] == hum_cell and table[5] == hum_cell and table[8] == hum_cell:
-        return True                 
-    if table[0] == hum_cell and table[4] == hum_cell and table[8] == hum_cell:
-        return True     
-    if table[2] == hum_cell and table[4] == hum_cell and table[6] == hum_cell:
-        return True     
-    if table[0:3].count(comp_cell) == 3:
-        return True
-    if table[3:6].count(comp_cell) == 3:
-        return True    
-    if table[6:9].count(comp_cell) == 3:
-        return True    
-    if table[0] == comp_cell and table[3] == comp_cell and table[6] == comp_cell:
-        return True                 
-    if table[1] == comp_cell and table[4] == comp_cell and table[7] == comp_cell:
-        return True      
-    if table[2] == comp_cell and table[5] == comp_cell and table[8] == comp_cell:
-        return True                 
-    if table[0] == comp_cell and table[4] == comp_cell and table[8] == comp_cell:
-        return True     
-    if table[2] == comp_cell and table[4] == comp_cell and table[6] == comp_cell:
-        return True   
+def check_indicies_type(indicies, cell_type):
+    for i in indicies:
+        if table[i] != cell_type:
+            return False
+    return True
+
+def is_win_situ(lines, cell_type):
+    for line in lines:
+        if check_indicies_type(line, cell_type):
+            return True
     return False
 
-def no_more_step(table):
+def is_winner(): 
+    lines = [first_line, second_line, third_line, first_row, second_row, third_row, major_diag, minor_diag]
+    return is_win_situ(lines, hum_cell) or is_win_situ(lines, comp_cell)
+
+def no_more_step():
     return table.count(empy_cell) == 0
 
-def calculate_comp_index(table):
+def calculate_comp_index():
     return table.index(empy_cell)
 
 def is_last_cell_in_row(cell_ind):
@@ -58,58 +35,69 @@ def print_cell(cell_ind, cell):
     else:
         print(cell + '|', end='')
 
-def print_table(table):
+def print_table():
     clear()
     for cell_ind, cell in enumerate(table):
         print_cell(cell_ind, cell)
         if is_last_cell_in_row(cell_ind):
             print('-----')
 
-def is_game_ended(table):
-    return is_winner(table) or no_more_step(table)
+def is_game_ended():
+    return is_winner() or no_more_step()
 
-def input_human_index(table):
+def input_human_index():
     input_pattern = re.compile("^[1-9]$")
     while True:
+        print_table()
         hum_input = str(input())
         if input_pattern.match(hum_input):
-            hum_index = int(hum_input) - 1
-            if table[hum_index] == empy_cell:
-                return hum_index 
+            return int(hum_input) - 1 
 
-def hum_step(table):
+def hum_step():
     while True:
-        print_table(table)
-        hum_index = input_human_index(table)
+        hum_index = input_human_index()
         if table[hum_index] == empy_cell:
             break
     table[hum_index] = hum_cell
-    print_table(table)
+    print_table()
 
 
-def comp_step(table):
-    print_table(table)
-    com_index = calculate_comp_index(table)
+def comp_step():
+    print_table()
+    com_index = calculate_comp_index()
     table[com_index] = comp_cell
-    print_table(table)
+    print_table()
 
-def print_result(table):
-    if is_winner(table):
+def print_result():
+    if is_winner():
         print("There is a winner!")
     else:
         print("The game is ended with a tie!")
 
 def main():
-    table = [empy_cell for i in range(9)]
-
     while True:
-        hum_step(table)
-        if is_game_ended(table):
+        hum_step()
+        if is_game_ended():
             break
-        comp_step(table)
-        if is_game_ended(table):
+        comp_step()
+        if is_game_ended():
             break
 
-    print_result(table)
+    print_result()
+
+empy_cell = " "
+hum_cell = "X"
+comp_cell = "O"
+
+first_line  = [0, 1, 2]
+second_line = [3, 4, 5]
+third_line  = [6, 7, 8]
+first_row   = [0, 3, 6]
+second_row  = [1, 4, 7]
+third_row   = [2, 5, 8]
+major_diag  = [0, 4, 8]
+minor_diag  = [6, 4, 2]
+
+table = [empy_cell for i in range(9)]
 
 main()
