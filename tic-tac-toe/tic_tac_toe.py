@@ -86,7 +86,7 @@ def print_table():
     clear()
     for cell_ind, cell in enumerate(table):
         print_cell(cell_ind, cell)
-        if is_last_cell_in_row(cell_ind):
+        if is_last_cell_in_row(cell_ind) and cell_ind < 8:
             print('-----')
 
 def is_game_ended():
