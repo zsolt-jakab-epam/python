@@ -93,7 +93,6 @@ def is_game_ended():
     return is_winner() or no_more_step()
 
 def input_human_index():
-    input_pattern = re.compile(input_pattern_text)
     while True:
         print_table()
         hum_input = str(input())
@@ -133,6 +132,7 @@ def main():
     print_result()
 
 input_pattern_text = '^[1-9]$'
+input_pattern = re.compile(input_pattern_text)
 
 empty_cell = ' '
 hum_cell = 'X'
